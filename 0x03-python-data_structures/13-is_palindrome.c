@@ -1,75 +1,83 @@
-#include "lists.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <stddef.h>
+#include "lists.h"
 
 /**
- * reverse_listint - reverses a linked list
- * @head: pointer to the first node in the list
+ * is_palindrome - Checks if a singly linked list is a palindrome
+ * @head: The head of the singly linked list
  *
- * Return: pointer to the first node in the new list
- */
-void reverse_listint(listint_t **head)
-{
-	listint_t *prev = NULL;
-	listint_t *current = *head;
-	listint_t *next = NULL;
-
-	while (current)
-	{
-		next = current->next;
-		current->next = prev;
-		prev = current;
-		current = next;
-	}
-
-	*head = prev;
-}
-
-/**
- * is_palindrome - checks if a linked list is a palindrome
- * @head: double pointer to the linked list
- *
- * Return: 1 if it is, 0 if not
+ * Return: 0 if it is not a palindrome, 1 if it is a palindrome
  */
 int is_palindrome(listint_t **head)
 {
-	listint_t *slow = *head, *fast = *head, *temp = *head, *dup = NULL;
+  listint_t *start = NULL, *end = NULL;
+  unsigned int i = 0, len = 0, len_cyc = 0, len_list = 0;
 
-	if (*head == NULL || (*head)->next == NULL)
-		return (1);
+  if (head == NULL)
+    return (0);
 
-	while (1)
-	{
-		fast = fast->next->next;
-		if (!fast)
-		{
-			dup = slow->next;
-			break;
-		}
-		if (!fast->next)
-		{
-			dup = slow->next->next;
-			break;
-		}
-		slow = slow->next;
-	}
+  if (*head == NULL)
+    return (1);
+    
+  start = *head;
+  len = listint_len(start);
+  len_cyc = len * 2;
+  len_list = len_cyc - 2;
+  end = *head;
 
-	reverse_listint(&dup);
+  for (; i < len_cyc; i = i + 2)
+    {
+      if (start[i].n != end[len_list].n)
+        return (0);
 
-	while (dup && temp)
-	{
-		if (temp->n == dup->n)
-		{
-			dup = dup->next;
-			temp = temp->next;
-		}
-		else
-			return (0);
-	}
+      len_list = len_list - 2;
+    }
 
-	if (!dup)
-		return (1);
+  return (1);
+ }
 
-	return (0);
+/**
+ * get_nodeint_at_index - Gets a node from a linked list
+ * @head: The head of the linked list
+ * @index: The index to find in the linked list
+ *
+ * Return: The specific node of the linked list
+ */
+listint_t *get_nodeint_at_index(listint_t *head, unsigned int index)
+{
+  listint_t *current = head;
+  unsigned int iter_times = 0;
+
+  if (head)
+    {
+      while (current != NULL)
+        {
+          if (iter_times == index)
+            return (current);
+
+          current = current->next;
+          ++iter_times;
+        }
+    }
+
+  return (NULL);
+}
+
+/**
+ * slistint_len - Counts the number of elements in a linked list
+ * @h: The linked list to count
+ *
+ * Return: Number of elements in the linked list
+ */
+size_t listint_len(const listint_t *h)
+{
+  int lenght = 0;
+
+  while (h != NULL)
+    {
+      ++lenght;
+      h = h->next;
+    }
+
+  return (lenght);
 }
